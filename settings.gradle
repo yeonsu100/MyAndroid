@@ -1,0 +1,2 @@
+include ':step01layout', ':step02activity', ':step04customlist', ':step05asynctask', ':step06fragment', ':step06fragment2', ':step07customview'
+rootProject.name='MyAndroid'

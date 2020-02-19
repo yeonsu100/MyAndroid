@@ -43,10 +43,12 @@ public class BeerView extends View {
     // 트릭 모드 횟수
     int trickCount=0;
     // Context
-    Context context;
+    // Context context;
+    // 사운드 매니저를 관리할 필드에
+    Util.SoundManager sManager;
     // 재생할 음원을 관리할 static final 필드
-    static final String SOUND_ZOMBIE="zombie";
-    static final String SOUND_SHOOT="shoot";
+    static final int SOUND_ZOMBIE=0;
+    static final int SOUND_SHOOT=1;
     // 재생할 음원의 아이디를 저장할 필드
     Map<String,Integer> map=new HashMap<>();
     SoundPool pool;
@@ -54,12 +56,12 @@ public class BeerView extends View {
     // 생성자
     public BeerView(Context context) {
         super(context);
-        this.context=context;
+        //this.context=context;
     }
 
     public BeerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context=context;
+        //this.context=context;
     }
 
     // View의 사이즈를 전달받을 메소드
@@ -83,16 +85,23 @@ public class BeerView extends View {
         handler.sendEmptyMessageDelayed(0,10);
 
         // 사운드 재생 준비
-        prepareSound();
+        // prepareSound();
+        // 사운드 매니저의 참조값 얻어와서
+        sManager=Util.SoundManager.getInstance();
+        // 준비 작업을 하고
+        sManager.init(getContext());
+        // 필요한 사운드를 로딩 시킨다.
+        sManager.addSound(SOUND_ZOMBIE, R.raw.zombie);
+        sManager.addSound(SOUND_SHOOT, R.raw.shoot);
     }
 
-    public void prepareSound(){
-        pool= new SoundPool(5,      // 최대 동시 재생
-                AudioManager.STREAM_MUSIC, 0);
-        // 사운드 로딩과 동시에 사운드의 아이디값을 Map 에 저장하기
-        map.put(SOUND_ZOMBIE, pool.load(context, R.raw.zombie, 1));
-        map.put(SOUND_SHOOT, pool.load(context, R.raw.shoot, 1));
-    }
+//    public void prepareSound(){
+//        pool= new SoundPool(5,      // 최대 동시 재생
+//                AudioManager.STREAM_MUSIC, 0);
+//        // 사운드 로딩과 동시에 사운드의 아이디값을 Map 에 저장하기
+//        map.put(SOUND_ZOMBIE, pool.load(context, R.raw.zombie, 1));
+//        map.put(SOUND_SHOOT, pool.load(context, R.raw.shoot, 1));
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -113,13 +122,14 @@ public class BeerView extends View {
                 // 트릭 심어놓기 (어떻게 움직이든 한 곳에 멈추게 된다. (트릭) - 세게 돌릴 때만 동작 (살짝 돌리면 적용 안됨))
                 if(angleSpeed==80 && isTrick){     // 회전 속도가 80에서 멈추었을 때이면서 동시에 트릭 모드가 시행됐을 때
                     angle=0+90*trickCount;         // 초기값 0에서 트릭을 한번 수행할 때마다 90도씩 회전한다.
-                    isTrick=false;          // 트릭을 한번 사용했으면 트릭 모드를 해제한다.
+                    isTrick=false;                 // 트릭을 한번 사용했으면 트릭 모드를 해제한다.
                     trickCount++;
                 }
         }else {                  // 회전이 끝난 경우
             if (isRotating) {
                 // 효과음 재생시키기
-                pool.play(map.get(SOUND_ZOMBIE), 1, 1, 1, 0, 1);
+                //pool.play(map.get(SOUND_ZOMBIE), 1, 1, 1, 0, 1);
+                sManager.play(SOUND_ZOMBIE);
             }
             isRotating = false;
             angleSpeed = 0;

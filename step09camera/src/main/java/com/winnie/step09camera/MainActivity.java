@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
             requestTakePic();
         }
     }
-    // 퍼미션을 체크 했을때ㅐ 호출되는 메소드
+    // 퍼미션을 체크 했을때 호출되는 메소드
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
     // 사진찍겠다는 요청하기
     public void requestTakePic(){
-        // 사진을 촬영하겠다는 인텐트 객체 작성하기
+        // 사진을 촬영하겠다는 인텐트 객체 작성하기 (=카메라 앱을 실행할 것이니 필요한 객체를 찾아달라고 운체에 맡기는 것)
         Intent intent=new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         // 사진을 촬영할수 있는 기기인지 확인해서
@@ -94,16 +94,15 @@ public class MainActivity extends AppCompatActivity
                 String timeStamp=
                         new SimpleDateFormat("yyyyMMdd_HHmmss")
                                 .format(new Date());
-                String imageFileName="JPEG_"+timeStamp+"_";
                 String path=getExternalFilesDir(null).getAbsolutePath();
                 photoFile=new File(path+"/"+timeStamp+".jpg");
-                // 절대 경로를 맴버필드에 저장한다.
+                // 절대 경로를 멤버필드에 저장한다.
                 absolutePath=photoFile.getAbsolutePath();
             }catch(Exception e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
             if(photoFile!=null){
-                // 사진을 저장할 파일의 Uri 객체를 얻어온다.
+                // 사진을 저장할 파일의 Uri 객체를 얻어온다. (context, 앱의 패키지명.fileprovider, 실제 파일객체)
                 Uri uri= FileProvider.getUriForFile(this, "com.winnie.step09camera.fileprovider", photoFile);
 
                 Log.i("uri", uri.getPath());
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(intent, 0);
             }       // if()
         }else{
-            Toast.makeText(this,"카메라 App 이 필요합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"카메라 App이 필요합니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity
                     // Bitmap 을 ImageView 에 출력하기
                     // imageView.setImageBitmap(image);
 
-                    // 이미지뷰에 딱 맞도록 출력
+                    // 정상적으로 처리가 되었다면 이미지뷰에 딱 맞도록 출력 (이미지 파일의 참조값, 이미지 파일이 저장되어있는 절대경로)
                     fitToImageView(imageView, absolutePath);
 
                     break;
@@ -169,8 +168,9 @@ public class MainActivity extends AppCompatActivity
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(absolutePath, bmOptions);
-        /* 사진이 세로로 촬영했을때 회전하지 않도록 */
+        Bitmap bitmap = BitmapFactory.decodeFile(absolutePath, bmOptions);  // 사진 파일을 이용해 비트맵을 만든다 => 이미지뷰에 출력할 수 있다
+
+        // 사진이 세로로 촬영했을때 회전하지 않도록
         try {
             ExifInterface ei = new ExifInterface(absolutePath);
             int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);

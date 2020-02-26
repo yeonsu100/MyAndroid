@@ -104,9 +104,7 @@ public class MainActivity extends AppCompatActivity
             // 권한을 얻어야하는 퍼미션 목록
             String[] permissions={Manifest.permission.READ_CONTACTS};
             // 권한을 얻어내도록 유도한다.
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    0);
+            ActivityCompat.requestPermissions(this, permissions, Constants.REQUEST_CONTACTS);
         }else{                      // 권한이 있다면
             getContacts();
         }
@@ -117,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
-            case 0:                 // 0 번 요청 코드인 경우
+            case Constants.REQUEST_CONTACTS:                 // 0 번 요청 코드인 경우
                 // 퍼미션을 Allow 했을경우
                 if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     getContacts();
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity
                             Toast.LENGTH_LONG).show();
                 }
                 break;
-            case 1:                 // 1 번 요청 코드인 경우
+            case Constants.REQUEST_CALL:                 // 1 번 요청 코드인 경우
                 // 퍼미션을 Allow 했을경우
                 if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     call();
@@ -150,8 +148,8 @@ public class MainActivity extends AppCompatActivity
         if(permissionCheck != PackageManager.PERMISSION_GRANTED){       // 권한이 없다면
             // 권한을 얻어야하는 퍼미션 목록
             String[] permissions={Manifest.permission.CALL_PHONE};
-            // 권한을 얻어내도록 유도 (이 때 요청 코드는 0이 아닌 1로 함으로써 READ_CONTACTS와 다르게 해야한다.)
-            ActivityCompat.requestPermissions(this, permissions, 1);
+            // 권한을 얻어내도록 유도한다.
+            ActivityCompat.requestPermissions(this, permissions, Constants.REQUEST_CALL);
         }else{                      // 권한이 있다면
             call();
         }

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':step18googlemap', ':step19locationinfo'
 rootProject.name='Step17SQLiteDB'

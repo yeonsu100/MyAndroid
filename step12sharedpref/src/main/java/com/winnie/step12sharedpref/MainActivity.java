@@ -10,8 +10,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,5 +128,20 @@ public class MainActivity extends AppCompatActivity
         }else{
             sw.setText("OFF");
         }
+    }
+
+    // Setting 액티비티에서 저장했던 값을 읽어내는 메소드
+    public void readSettings(View v){
+        // 디폴트로 사용하는 SharedPreferences 객체의 참조값 얻어오기
+        SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(this);
+        // signature라는 키값으로 저장된 문자열 읽어오기
+        String signature=pref.getString("signature", "");
+        // reply라는 키값으로 저장된 문자열 읽어오기
+        String reply=pref.getString("reply", "");
+        // sync라는 키값으로 저장된 boolean값 읽어오기
+        boolean sync=pref.getBoolean("sync", false);
+
+        String info="signature : "+signature+" | reply : "+reply+" | sync : "+sync;
+        Toast.makeText(this, info, Toast.LENGTH_LONG).show();
     }
 }
